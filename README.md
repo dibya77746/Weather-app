@@ -1,289 +1,143 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pro Weather App</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(to right, #83a4d4, #b6fbff);
-      color: #333;
-      transition: background 1s ease;
-    }
 
-    .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
-    }
+      
+    
 
-    h1 {
-      text-align: center;
-      color: #0077ff;
-    }
 
-    .search-box {
-      display: flex;
-      justify-content: center;
-      margin: 20px 0;
-      position: relative;
-    }
+---
 
-    input {
-      padding: 10px;
-      font-size: 16px;
-      width: 70%;
-      border: 1px solid #ccc;
-      border-radius: 5px 0 0 5px;
-    }
+🌦 Live Weather App ⛅ | Powered by Real-Time Weather API 📡
 
-    button {
-      padding: 10px;
-      font-size: 16px;
-      border: none;
-      background: #0077ff;
-      color: #fff;
-      border-radius: 0 5px 5px 0;
-      cursor: pointer;
-    }
+> “Get real-time weather updates, anytime, anywhere – just type your city!” 🌍📲
+Built with ❤ HTML + CSS + JavaScript | 🔧 VS Code | 🔗 OpenWeatherMap API
 
-    .suggestions {
-      position: absolute;
-      top: 40px;
-      background: #fff;
-      border: 1px solid #ccc;
-      width: 70%;
-      max-height: 200px;
-      overflow-y: auto;
-      border-radius: 0 0 5px 5px;
-      z-index: 10;
-    }
 
-    .suggestions div {
-      padding: 10px;
-      cursor: pointer;
-    }
 
-    .suggestions div:hover {
-      background: #f0f0f0;
-    }
 
-    .current-weather, .forecast, .hourly {
-      background: #fff;
-      border-radius: 10px;
-      padding: 20px;
-      margin: 20px 0;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
+---
 
-    .weather-details {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-    }
+📝 Project Description
 
-    .forecast-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      gap: 10px;
-      margin-top: 10px;
-    }
+This Weather App is a clean, fast, and responsive weather forecast application built using HTML 🟠, CSS 🔵, and JavaScript 🟡. It uses OpenWeatherMap API 🌐 to fetch real-time weather data based on the user's city input.
 
-    .forecast-day, .hourly-item {
-      text-align: center;
-      background: #f9f9f9;
-      border-radius: 8px;
-      padding: 10px;
-    }
+📲 Whether you're planning a trip or just curious about today’s temperature, this app helps you stay updated with the latest weather info including temperature, humidity, wind speed, and weather conditions like sunny, rainy, cloudy, etc.
 
-    .hourly-scroll {
-      display: flex;
-      overflow-x: auto;
-      gap: 10px;
-      margin-top: 10px;
-    }
 
-    .hourly-item img, .forecast-day img {
-      width: 50px;
-    }
+---
 
-    .alert {
-      background: #ffeb3b;
-      padding: 10px;
-      border-radius: 5px;
-      margin-top: 10px;
-    }
+🚀 Features
 
-    .time-sun {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      margin-top: 10px;
-      font-size: 14px;
-      color: #555;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>🌦️ Weather App</h1>
-    <div class="search-box">
-      <input type="text" id="locationInput" placeholder="Enter location..." oninput="autoSuggest()">
-      <button onclick="getWeather()">Search</button>
-      <div id="suggestions" class="suggestions"></div>
-    </div>
+✅ Get real-time weather of any city
+✅ Dynamic background changes based on weather (optional)
+✅ Easy-to-use input field
+✅ Displays:
 
-    <div class="current-weather" id="currentWeather" style="display:none;"></div>
+🌡 Temperature
 
-    <div class="hourly" id="hourlyWeather" style="display:none;">
-      <h2>Hourly Forecast</h2>
-      <div class="hourly-scroll" id="hourlyScroll"></div>
-    </div>
+💧 Humidity
 
-    <div class="forecast" id="forecastWeather" style="display:none;">
-      <h2>7-Day Forecast</h2>
-      <div class="forecast-grid" id="forecastGrid"></div>
-    </div>
-  </div>
+🌬 Wind Speed
 
-  <script>
-    const apiKey = '59fa298d82024da287d42057251205';
+☁ Weather Description
 
-    function getWeather(selected) {
-      let loc = selected || document.getElementById('locationInput').value;
-      if (!loc) return alert('Please enter a location');
+🏙 City Name & Country
 
-      fetch(`https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${loc}&days=7&aqi=yes&alerts=yes`)
-        .then(res => res.json())
-        .then(data => {
-          showCurrent(data);
-          showHourly(data);
-          showForecast(data);
-          dynamicBackground(data.current.condition.text);
-          showTimeSun(data);
-        })
-        .catch(() => alert('Location not found or API limit reached!'));
-    }
 
-    function showCurrent(data) {
-      const c = data.current;
-      const l = data.location;
-      const aqi = c.air_quality.pm2_5.toFixed(1);
-      const alert = data.alerts.alert.length > 0 ? data.alerts.alert[0].headline : '';
 
-      document.getElementById('currentWeather').innerHTML = `
-        <h2>${l.name}, ${l.country}</h2>
-        <img src="https:${c.condition.icon}">
-        <p><strong>${c.temp_c}°C</strong> (${c.temp_f}°F), Feels like ${c.feelslike_c}°C</p>
-        <p>${c.condition.text}</p>
-        <div class="time-sun">
-          <div id="localTime">🕒 Local Time: --</div>
-          <div>🌅 Sunrise: ${data.forecast.forecastday[0].astro.sunrise}</div>
-          <div>🌇 Sunset: ${data.forecast.forecastday[0].astro.sunset}</div>
-        </div>
-        <div class="weather-details">
-          <div>💧 Humidity: ${c.humidity}%</div>
-          <div>💨 Wind: ${c.wind_kph} kph</div>
-          <div>🌡️ Pressure: ${c.pressure_mb} mb</div>
-          <div>🔆 UV: ${c.uv}</div>
-          <div>🫁 AQI (PM2.5): ${aqi}</div>
-        </div>
-        ${alert ? `<div class="alert">⚠️ ${alert}</div>` : ''}
-      `;
-      document.getElementById('currentWeather').style.display = 'block';
-      startClock(data.location.localtime);
-    }
+---
 
-    function showHourly(data) {
-      const hours = data.forecast.forecastday[0].hour;
-      let html = '';
-      hours.forEach(h => {
-        html += `
-          <div class="hourly-item">
-            <p>${h.time.split(' ')[1]}</p>
-            <img src="https:${h.condition.icon}">
-            <p>${h.temp_c}°C</p>
-          </div>
-        `;
-      });
-      document.getElementById('hourlyScroll').innerHTML = html;
-      document.getElementById('hourlyWeather').style.display = 'block';
-    }
+🛠 Tech Stack Used
 
-    function showForecast(data) {
-      const days = data.forecast.forecastday;
-      let html = '';
-      days.forEach(d => {
-        const emoji = getWeatherEmoji(d.day.condition.text);
-        html += `
-          <div class="forecast-day">
-            <p>${d.date}</p>
-            <img src="https:${d.day.condition.icon}">
-            <p>${d.day.avgtemp_c}°C ${emoji}</p>
-            <p>${d.day.condition.text}</p>
-          </div>
-        `;
-      });
-      document.getElementById('forecastGrid').innerHTML = html;
-      document.getElementById('forecastWeather').style.display = 'block';
-    }
+Tech	Logo
 
-    function getWeatherEmoji(condition) {
-      if (condition.includes('Sunny') || condition.includes('Clear')) return '🌞';
-      if (condition.includes('Cloudy')) return '☁️';
-      if (condition.includes('Rain')) return '🌧️';
-      if (condition.includes('Snow')) return '❄️';
-      if (condition.includes('Wind')) return '🌬️';
-      return '🌥️';
-    }
+HTML	<img src="https://img.icons8.com/color/48/html-5--v1.png" width="24"/>
+CSS	<img src="https://img.icons8.com/color/48/css3.png" width="24"/>
+JavaScript	<img src="https://img.icons8.com/color/48/javascript.png" width="24"/>
+API: OpenWeatherMap	<img src="https://img.icons8.com/color/48/api.png" width="24"/>
+Code Editor: VS Code	<img src="https://img.icons8.com/color/48/visual-studio-code-2019.png" width="24"/>
 
-    function autoSuggest() {
-      let q = document.getElementById('locationInput').value;
-      if (q.length < 2) return document.getElementById('suggestions').innerHTML = '';
-      fetch(`https://api.weatherapi.com/v1/search.json?key=${apiKey}&q=${q}`)
-        .then(res => res.json())
-        .then(data => {
-          let html = '';
-          data.forEach(loc => {
-            html += `<div onclick="selectLocation('${loc.name}, ${loc.country}')">${loc.name}, ${loc.country}</div>`;
-          });
-          document.getElementById('suggestions').innerHTML = html;
-        });
-    }
 
-    function selectLocation(loc) {
-      document.getElementById('locationInput').value = loc;
-      document.getElementById('suggestions').innerHTML = '';
-      getWeather(loc);
-    }
 
-    function dynamicBackground(condition) {
-      let bg;
-      if (condition.includes('Sunny') || condition.includes('Clear')) bg = 'linear-gradient(to right, #fceabb, #f8b500)';
-      else if (condition.includes('Cloudy')) bg = 'linear-gradient(to right, #bdc3c7, #2c3e50)';
-      else if (condition.includes('Rain')) bg = 'linear-gradient(to right, #4b79a1, #283e51)';
-      else if (condition.includes('Snow')) bg = 'linear-gradient(to right, #e6dada, #274046)';
-      else bg = 'linear-gradient(to right, #83a4d4, #b6fbff)';
+---
 
-      document.body.style.background = bg;
-    }
+🧠 How It Works – Step by Step
 
-    function startClock(localtime) {
-      let time = new Date(localtime);
-      function update() {
-        time.setMinutes(time.getMinutes() + 1);
-        let h = time.getHours().toString().padStart(2, '0');
-        let m = time.getMinutes().toString().padStart(2, '0');
-        document.getElementById('localTime').innerText = `🕒 Local Time: ${h}:${m}`;
-      }
-      update();
-      setInterval(update, 60000);
-    }
+1. User enters the city name in the input box.
 
-  </script>
-</body>
-</html>
+
+2. JavaScript captures the input and sends a request to OpenWeatherMap API.
+
+
+3. The API returns JSON weather data for that city.
+
+
+4. The app dynamically updates the UI to show:
+
+Temperature in °C/°F
+
+Humidity percentage
+
+Wind speed in km/h
+
+Weather status (e.g., Rainy, Cloudy, Sunny)
+
+
+
+
+
+---
+
+📁 Project Structure
+
+Weather-App/
+├── index.html          👉 Main HTML structure
+├── style.css           👉 Styling (colors, layout, fonts)
+├── script.js           👉 Main JS file for logic/API calls
+├── assets/             👉 (Optional) Icons or images
+└── README.md           👉 Project documentation (this file)
+
+
+---
+
+💡 Bonus From My Side: Ideas to Improve Further
+
+✅ Add dynamic background images based on weather (e.g., rain, sun, snow)
+✅ Show local time of the selected city
+✅ Add Geolocation API to fetch user’s current location weather
+✅ Add Weather Icons using https://openweathermap.org/weather-conditions
+
+
+---
+
+🌐 OpenWeatherMap API Info
+
+API Website: https://openweathermap.org/
+
+You need to create a free account to get your API key
+
+Example API URL:
+
+https://api.openweathermap.org/data/2.5/weather?q=London&appid=YOUR_API_KEY&units=metric
+
+
+
+---
+
+📸 Screenshot (Optional)
+
+You can add screenshots of your app using:
+
+![Weather App Screenshot](path-to-image.png)
+
+
+---
+
+🧑‍💻 Created By
+
+Dibya Jyoti Mishra
+🌐 GitHub: YourGitHub
+📧 Email: dibyajyotilikun8@gmail.com
+
+
+---
+
+Would you like me to generate the full README.md file ready to upload, or help design a live hosted version with GitHub Pages?
